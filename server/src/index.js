@@ -15,9 +15,20 @@ const taskRoutes = require('./routes/task.routes');
 
 const app = express();
 
-// ─── Middleware ────────────────────────────────────────────────────────────────
+// ─── CORS — allow Vercel frontend + local dev ──────────────────────────────
+const allowedOrigins = [
+  process.env.CLIENT_URL,           // e.g. https://taskflow.vercel.app
+  'http://localhost:5173',           // local dev
+  'http://localhost:3000',
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || '*',
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS blocked: ${origin}`));
+  },
   credentials: true,
 }));
 app.use(express.json());
@@ -34,19 +45,11 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Team Task Manager API is running' });
 });
 
-// Serve React frontend in production
-if (process.env.NODE_ENV === 'production') {
-  const publicDir = path.join(__dirname, '../public');
-  app.use(express.static(publicDir));
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(publicDir, 'index.html'));
-  });
-}
-
-// 404 handler (only applies in development)
+// 404 handler
 app.use((req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });
 });
+
 
 // Global error handler
 app.use((err, req, res, next) => {
