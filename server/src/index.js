@@ -19,6 +19,7 @@ const app = express();
 const allowedOrigins = [
   process.env.CLIENT_URL,           // e.g. https://taskflow.vercel.app
   'http://localhost:5173',           // local dev
+  'http://localhost:5174',           // local dev fallback
   'http://localhost:3000',
 ].filter(Boolean);
 

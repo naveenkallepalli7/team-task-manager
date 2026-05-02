@@ -21,7 +21,7 @@ A full-stack team task management application built with the **MERN stack** (Mon
 | Database | MongoDB + Mongoose ORM |
 | Auth | JWT + bcryptjs |
 | Styling | Vanilla CSS (custom design system) |
-| Deployment | Railway-ready |
+| Deployment | Vercel & Render |
 
 ---
 
@@ -198,14 +198,13 @@ team-task-manager/
 │   ├── .env
 │   └── package.json
 │
-├── railway.toml             # Railway deployment config
 ├── package.json             # Root scripts
 └── README.md
 ```
 
 ---
 
-## 🚀 Deployment on Railway
+## 🚀 Deployment on Vercel & Render
 
 ### 1. Push to GitHub
 ```bash
@@ -214,26 +213,20 @@ git remote add origin <your-repo-url>
 git push -u origin main
 ```
 
-### 2. Create Railway Project
-1. Go to [railway.app](https://railway.app) → New Project
-2. Connect your GitHub repo
-3. Add a **MongoDB** plugin (or use MongoDB Atlas)
+### 2. Deploy Backend to Render
+1. Go to [render.com](https://render.com) → New Web Service
+2. Connect your GitHub repo and select the `server` directory
+3. Set Build Command: `npm install` and Start Command: `node src/index.js`
+4. Add Environment Variables: `MONGO_URI`, `JWT_SECRET`, `JWT_EXPIRES_IN`, `ADMIN_SECRET_KEY`, `NODE_ENV=production`
 
-### 3. Set Environment Variables in Railway
-```
-MONGO_URI=<your-mongodb-connection-string>
-JWT_SECRET=<strong-secret-key>
-JWT_EXPIRES_IN=7d
-NODE_ENV=production
-CLIENT_URL=https://<your-railway-domain>
-PORT=5000
-```
+### 3. Deploy Frontend to Vercel
+1. Go to [vercel.com](https://vercel.com) → New Project
+2. Connect your GitHub repo and select the `client` directory
+3. Framework Preset: `Vite`
+4. Add Environment Variable: `VITE_API_URL` pointing to your Render backend URL (e.g. `https://taskflow-api.onrender.com/api`)
 
-### 4. Deploy
-Railway auto-deploys on push. The `railway.toml` config:
-1. Builds the React frontend → `server/public/`
-2. Starts the Express server
-3. Express serves both the API and the React app in production
+### 4. Set Frontend URL in Render
+Update the `CLIENT_URL` environment variable in Render with your Vercel URL (e.g. `https://team-task-manager.vercel.app`) to allow CORS.
 
 ---
 
@@ -267,4 +260,4 @@ Railway auto-deploys on push. The `railway.toml` config:
 - 🎨 Premium dark UI with glassmorphism
 - 📱 Responsive design
 - 🌱 Seed data for instant testing
-- 🚀 Railway deployment ready
+- 🚀 Vercel & Render deployment ready
